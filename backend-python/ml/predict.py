@@ -5,6 +5,12 @@ from flask import Flask, request, jsonify
 import tensorflow as tf
 import requests
 from pathlib import Path
+from tensorflow.keras.utils import img_to_array
+import keras
+from tensorflow.keras.applications import resnet50
+from tensorflow.keras.applications import ResNet50
+
+
 
 # --- add at top of file, after imports ---
 MODEL_FILENAME = "model.h5"
@@ -39,6 +45,9 @@ def download_model_if_missing():
 
 # Disable GPU if needed (can help with some compatibility issues)
 tf.config.set_visible_devices([], 'GPU')
+
+# 🔥 DOWNLOAD MODEL BEFORE FLASK APP IS LOADED
+download_model_if_missing()
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -136,16 +145,14 @@ def preprocess_image(img_bytes):
         # Resize to 224x224 (ResNet50 input size)
         img = img.resize((224, 224))
         
-        # Import keras preprocessing dynamically
-        import keras
-        # Convert to array using Keras
-        img_array = keras.preprocessing.image.img_to_array(img)
+        img_array = img_to_array(img)
         
         # Expand dimensions to match model input (1, 224, 224, 3)
         img_array = np.expand_dims(img_array, axis=0)
         
         # Apply ResNet50 preprocessing
-        img_array = keras.applications.resnet50.preprocess_input(img_array)
+        img_array = resnet50.preprocess_input(img_array)
+
         
         return img_array
     finally:
