@@ -1,6 +1,10 @@
 # Dependencies
 node_modules/
 
+# Production builds
+.next/
+out/
+
 # Environment files
 .env
 .env.local
@@ -47,16 +51,9 @@ temp/
 # Package manager files
 package-lock.json
 yarn.lock
+.npmrc
+.yarn/cache
 
 # Render files
 .render-buildpacks.json
 .render-buildpack-run.sh
-
-# Database
-*.db
-*.sqlite
-
-# Compiled JavaScript
-*.js
-!*.config.js
-!*.setup.js
